@@ -3,14 +3,18 @@ var app = angular.module('CWNerdQuizApp', []);
 app.controller('CWNerdQuizController', function($scope, $rootScope) {
 	$scope.players = [];
 	
-	$rootScope.socket = new WebSocket("ws://127.0.0.1:9000");
-	$rootScope.socket.onopen = function() {
-	   console.log("Connected!");
-	   isopen = true;
-	   $rootScope.socket.send('{"action" : "getPlayer"}');
+	$rootScope.senderSocket = new WebSocket("ws://127.0.0.1:9000");
+	$rootScope.senderSocket.onopen = function() {
+	   console.log("senderSocket Connected!");
+	   $rootScope.senderSocket.send('{"action" : "getPlayer"}');
 	}
 	
-	$rootScope.socket.onmessage = function(e) {
+	$rootScope.recieverSocket = new WebSocket("ws://127.0.0.1:4711");
+	$rootScope.recieverSocket.onopen = function() {
+	   console.log("recieverSocket Connected!");
+	}
+	
+	$rootScope.recieverSocket.onmessage = function(e) {
 		console.log(e.data)
 		
 		if (typeof e.data == "string") {
@@ -23,13 +27,17 @@ app.controller('CWNerdQuizController', function($scope, $rootScope) {
 	   }
 	}
 	
-	$rootScope.socket.onclose = function(e) {
-	   console.log("Connection closed.");
-	   socket = null;
-	   isopen = false;
+	$rootScope.senderSocket.onclose = function(e) {
+	   console.log("senderSocket Connection closed.");
+	   senderSocket = null;
+	}
+	
+	$rootScope.recieverSocket.onclose = function(e) {
+	   console.log("recieverSocket Connection closed.");
+	   recieverSocket = null;
 	}
 	
    $scope.initBuzzer = function() {
-		$rootScope.socket.send('{"action" : "initBuzzer"}');
+		$rootScope.senderSocket.send('{"action" : "initBuzzer"}');
 	}
 });
