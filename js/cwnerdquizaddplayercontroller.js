@@ -1,8 +1,9 @@
-app.controller('CWNerdQuizAddPlayerController', function($scope, $rootScope) {
+app.controller('CWNerdQuizAddPlayerController', function($scope, $route) {
 	$scope.startAddress = undefined;
 	$scope.doPairingBuzzer = false;
 	
-	$rootScope.senderSocket.onmessage = function(e) {
+	socket = new WebSocket("ws://127.0.0.1:9000/ws");
+	socket.onmessage = function(e) {
 	   if (typeof e.data == "string") {
 		  message = JSON.stringify(e.data)
 		  if($scope.doPairingBuzzer == true) {
@@ -14,7 +15,8 @@ app.controller('CWNerdQuizAddPlayerController', function($scope, $rootScope) {
 	}
 	
 	$scope.savePlayer = function() {
-		$rootScope.senderSocket.send('{"action" : "savePlayer", "startAddress" : "' + $scope.startAddress + '", "name" : "' + $scope.playerName + '"}');
+		socket.send('{"action" : "savePlayer", "startAddress" : "' + $scope.startAddress + '", "name" : "' + $scope.playerName + '"}');
+		$route.reload()
 	}
 	
 	$scope.startPairingBuzzer = function() {

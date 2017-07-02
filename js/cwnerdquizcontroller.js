@@ -1,43 +1,59 @@
-var app = angular.module('CWNerdQuizApp', []);
+var app = angular.module('CWNerdQuizApp', ['ngRoute']);
 
-app.controller('CWNerdQuizController', function($scope, $rootScope) {
+app.controller('CWNerdQuizController', function($scope) {
 	$scope.players = [];
 	
-	$rootScope.senderSocket = new WebSocket("ws://127.0.0.1:9000");
-	$rootScope.senderSocket.onopen = function() {
-	   console.log("senderSocket Connected!");
-	   $rootScope.senderSocket.send('{"action" : "getPlayer"}');
-	}
+	socket = new WebSocket("ws://127.0.0.1:9000/ws");
+	socket.onopen = function() {
+	   console.log("socket Connected!");
+	   socket.send('{"action" : "getPlayers"}');
+	   socket.send('{"action" : "getQuizzes"}');
+   }
 	
-	$rootScope.recieverSocket = new WebSocket("ws://127.0.0.1:4711");
-	$rootScope.recieverSocket.onopen = function() {
-	   console.log("recieverSocket Connected!");
-	}
-	
-	$rootScope.recieverSocket.onmessage = function(e) {
-		console.log(e.data)
+	socket.onmessage = function(e) {
+		console.log("client recieved: " + e.data)
 		
 		if (typeof e.data == "string") {
 			response = e.data.replace(new RegExp('\'', 'g'), '"');
 			message = jQuery.parseJSON(response)
 			console.log(message)
-			if(message.action == "getPlayer") {
-				$scope.players = message.player;
+			if(message.action == "getPlayers") {
+				$scope.players = message.players;
+				$scope.players.sort($scope.sortPlayerByPoints)
+			} else if(message.action == "getQuizzes") {
+				$scope.quizzes = message.quizzes;
+				$scope.quizzes.sort();
 			}
+			
+			
 	   }
 	}
 	
-	$rootScope.senderSocket.onclose = function(e) {
-	   console.log("senderSocket Connection closed.");
-	   senderSocket = null;
-	}
-	
-	$rootScope.recieverSocket.onclose = function(e) {
-	   console.log("recieverSocket Connection closed.");
-	   recieverSocket = null;
+	socket.onclose = function(e) {
+	   console.log("socket Connection closed.");
+	   socket = null;
 	}
 	
    $scope.initBuzzer = function() {
-		$rootScope.senderSocket.send('{"action" : "initBuzzer"}');
+		socket.send('{"action" : "initBuzzer"}');
+	}
+	
+	$scope.selectQuiz = function(quiz) {
+		socket.send('{"action" : "selectQuiz", "quiz" : "' + quiz + '"}');
+	}
+	
+	$scope.sortPlayerByPoints = function(player1, player2) {
+		if(player1.points == player2.points) {
+			return player1.name - player2.name;
+		} else {
+			return player1.points + player2.points
+		}
 	}
 });
+
+app.directive('quizTable', function() {
+	return {
+		templateUrl : 'html/cwquiztable.html',
+		controller : "CWNerdQuizTableController"
+	}
+})
