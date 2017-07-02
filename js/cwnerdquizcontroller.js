@@ -1,45 +1,33 @@
 var app = angular.module('CWNerdQuizApp', ['ngRoute']);
 
-app.controller('CWNerdQuizController', function($scope) {
-	$scope.players = [];
+app.controller('CWNerdQuizController', function($scope, $rootScope) {
+	$scope.players = undefined;
+	$scope.quizzes = undefined;
+	$scope.selectedQuiz = undefined;
 	
-	socket = new WebSocket("ws://127.0.0.1:9000/ws");
-	socket.onopen = function() {
-	   console.log("socket Connected!");
-	   socket.send('{"action" : "getPlayers"}');
-	   socket.send('{"action" : "getQuizzes"}');
-   }
-	
-	socket.onmessage = function(e) {
-		console.log("client recieved: " + e.data)
-		
-		if (typeof e.data == "string") {
-			response = e.data.replace(new RegExp('\'', 'g'), '"');
-			message = jQuery.parseJSON(response)
-			console.log(message)
-			if(message.action == "getPlayers") {
-				$scope.players = message.players;
-				$scope.players.sort($scope.sortPlayerByPoints)
-			} else if(message.action == "getQuizzes") {
-				$scope.quizzes = message.quizzes;
-				$scope.quizzes.sort();
-			}
-			
-			
-	   }
+	$scope.setPayersCallback = function(players) {
+		$scope.players = players;
 	}
 	
-	socket.onclose = function(e) {
-	   console.log("socket Connection closed.");
-	   socket = null;
+	$scope.setQuizzesCallback = function(quizzes) {
+		$scope.quizzes = quizzes;
+	}
+	
+	$scope.setSelectedQuizCallback = function(selectedQuiz) {
+		$scope.selectedQuiz = selectedQuiz;
+		$scope.pivotKey = Object.keys($scope.selectedQuiz.categories)[0];
 	}
 	
    $scope.initBuzzer = function() {
-		socket.send('{"action" : "initBuzzer"}');
+		$scope.socket.send('{"action" : "initBuzzer"}');
 	}
 	
 	$scope.selectQuiz = function(quiz) {
-		socket.send('{"action" : "selectQuiz", "quiz" : "' + quiz + '"}');
+		$rootScope.socket.send('{"action" : "selectQuiz", "quiz" : "' + quiz + '"}');
+	}
+	
+	$scope.selectQuestion = function(question) {
+		
 	}
 	
 	$scope.sortPlayerByPoints = function(player1, player2) {
@@ -50,10 +38,3 @@ app.controller('CWNerdQuizController', function($scope) {
 		}
 	}
 });
-
-app.directive('quizTable', function() {
-	return {
-		templateUrl : 'html/cwquiztable.html',
-		controller : "CWNerdQuizTableController"
-	}
-})

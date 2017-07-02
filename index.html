@@ -9,8 +9,13 @@
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-route.min.js"></script>
+		
+		<script src="./js/cwnerdquizcontroller.js"></script>
+		<script src="./js/cwnerdquizaddplayercontroller.js"></script>
+		<script src="./js/cwnerdquizwebsocketcontroller.js"></script>
+		
     </head>
-    <body ng-controller="CWNerdQuizController">
+    <body ng-controller="CWNerdQuizController" class="main">
 		<nav class="navbar navbar-default">
 		  <div class="container-fluid">
 			<div class="navbar-header">
@@ -31,20 +36,42 @@
 					<li ><a ng-class="{linkDisabled: players.length > 4}"  role="button" data-toggle="modal" data-target="#addPlayerModal">Spieler hinzuf&uuml;gen</a></li>
 				  </ul>
 				</li>
+				<li class="dropdown">
+				  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Quizzes<span class="caret"></span></a>
+				  <ul class="dropdown-menu">
+					<li ng-repeat="quiz in quizzes"><a ng-class="{linkDisabled: selectedQuiz != undefined}" ng-click="selectQuiz(quiz)" href="#">{{quiz}}</a></li>
+				 </ul>
+				</li>
 			  </ul>
 			</div>
 		  </div>
 		</nav>
 		<div class="container">
-			<div ng-repeat="quiz in quizzes">
-				<a type="button" class="btn btn-primary" ng-click="selectQuiz(quiz)" href="">{{quiz}}</a>
+			<div class="row">
+				<websocket ng-controller="CWNerdQuizWebSocketController"></websocket>
+				<div class="fluid-container">
+					<table width="100%" ng-show="selectedQuiz != undefined" >
+						<tr>
+							<th ng-repeat="(categoryName, questions) in selectedQuiz.categories">
+								<div class="categoryHeader">
+									{{categoryName}}
+								<div>
+							</th>
+								
+							<tr class="table-questions" ng-repeat="(questionIndex, qestionValue) in selectedQuiz.categories[pivotKey]">
+								<td ng-repeat="question in selectedQuiz.categories">
+									<div>
+										<div class="btn btn-xlarge category-{{$index}} question-{{questionIndex}}" >
+											{{questionIndex}}
+										</div>
+									</div>
+								</td>
+							<tr>
+						</tr>						
+					</table>
+				</div>
 			</div>
-			<quiz-table></quiz-table>
-		</div>
-		
-		<script src="./js/cwnerdquizcontroller.js"></script>
-		<script src="./js/cwnerdquiztablecontroller.js"></script>
-		<script src="./js/cwnerdquizaddplayercontroller.js"></script>
+		</div>		
 		
 		<ng-include src="'/html/cwnerdquizaddplayer.html'"></ng-include>
     </body>
