@@ -1,0 +1,28 @@
+<div id="questionModal" class="modal fade" role="dialog">
+	<div class="modal-dialog modal-lg " ng-controller="CWNerdQuizQuestionController">
+
+		<!-- Modal content-->
+		<div class="modal-content modal-background">
+			<div class="modal-header">
+				<h4 class="modal-title points">{{points}}</h4>
+			</div>
+			<div class="container-fluid">
+				<div class="row"></div>
+			</div>
+			<div class="modal-body">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-sm-12 question">{{question.question}}</div>
+					</div>
+					<div class="row">
+						<div class="btn btn-xlarge col-sm-6 blue-answer answer">{{question.blue}}</div>
+						<div class="btn btn-xlarge col-sm-6 orange-answer answer">{{question.orange}}</div>
+						<div class="btn btn-xlarge col-sm-6  green-answer answer">{{question.green}}</div>
+						<div class="btn btn-xlarge col-sm-6 yellow-answer answer">{{question.yellow}}</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
