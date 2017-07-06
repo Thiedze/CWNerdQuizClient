@@ -1,10 +1,18 @@
 <div id="questionModal" class="modal fade" role="dialog">
-	<div class="modal-dialog modal-lg " ng-controller="CWNerdQuizQuestionController">
+	<div id="my_div">
+		<audio controls id="my_audio">
+			<source src="music/01.mp3" type="audio/mp3">
+		</audio>
+	</div>
+	<div class="modal-dialog modal-lg "
+		ng-controller="CWNerdQuizQuestionController">
 
 		<!-- Modal content-->
 		<div class="modal-content modal-background">
 			<div class="modal-header">
-				<h4 class="modal-title points">{{points}}</h4>
+				<div class="container">
+					<h4 class="modal-title points row">{{points}} : {{countdown}}</h4>
+				</div>
 			</div>
 			<div class="container-fluid">
 				<div class="row"></div>
@@ -24,5 +32,4 @@
 			</div>
 		</div>
 	</div>
-</div>
 </div>

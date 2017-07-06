@@ -43,4 +43,10 @@ app.controller('CWNerdQuizController', function($scope, $rootScope) {
 		}
 	}
 
+	$scope.addPlayer = function() {
+		$scope.$broadcast("addPlayer", {
+			scope : $scope
+		});
+	}
+
 });

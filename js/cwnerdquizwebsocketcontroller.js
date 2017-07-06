@@ -29,6 +29,12 @@ app.controller('CWNerdQuizWebSocketController', function($scope, $rootScope) {
 					$scope.setSelectedQuizCallback(jQuery
 							.parseJSON(message.quiz).quiz);
 				}
+			} else if (message.action == "controllerInput") {
+				if ($scope.setPlayerStartAddressCallback != undefined) {
+					$scope.setPlayerStartAddressCallback(message.input);
+				} else if ($scope.setPlayerInputCallback != undefined) {
+					$scope.setPlayerInputCallback(message.input);
+				}
 			}
 
 		}
