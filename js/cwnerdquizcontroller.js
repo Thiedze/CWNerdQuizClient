@@ -31,7 +31,9 @@ app.controller('CWNerdQuizController', function($scope, $rootScope) {
 		$scope.$broadcast('openQuestion', {
 			question : questions[points],
 			points : points,
-			colorClass : colorClass
+			colorClass : colorClass,
+			scope : $scope,
+			players : $scope.players
 		})
 	}
 

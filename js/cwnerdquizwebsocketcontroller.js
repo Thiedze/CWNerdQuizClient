@@ -32,8 +32,12 @@ app.controller('CWNerdQuizWebSocketController', function($scope, $rootScope) {
 			} else if (message.action == "controllerInput") {
 				if ($scope.setPlayerStartAddressCallback != undefined) {
 					$scope.setPlayerStartAddressCallback(message.input);
-				} else if ($scope.setPlayerInputCallback != undefined) {
+				}
+				if ($scope.setPlayerInputCallback != undefined) {
 					$scope.setPlayerInputCallback(message.input);
+				}
+				if ($scope.setPlayerPressBuzzerCallback != undefined) {
+					$scope.setPlayerPressBuzzerCallback(message.input);
 				}
 			}
 
